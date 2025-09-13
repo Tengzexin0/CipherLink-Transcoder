@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherLink Transcoder - Base64编码转换工具</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50, #3498db);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #3498db, #2ecc71, #e74c3c, #f39c12);
+        }
+        .header {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #3498db;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.15);
+        }
+        .button:active {
+            transform: translateY(-1px);
+        }
+        .button.convert {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+        }
+        .button.copy {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+        }
+        .button.reset {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+        }
+        .result {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            display: block;
+            font-size: 1.1rem;
+        }
+        .code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 16px;
+            min-height: 60px;
+            word-break: break-all;
+            position: relative;
+            line-height: 1.5;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .instructions {
+            margin-top: 40px;
+            padding: 25px;
+            background: #e8f4fc;
+            border-radius: 15px;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .instructions p {
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #34495e;
+        }
+        .instructions code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+        /* 自定义提示框样式 */
+        .toast {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 62, 80, 0.95);
+            color: white;
+            padding: 16px 28px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s, top 0.3s;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+        .toast.show {
+            opacity: 1;
+            top: 40px;
+        }
+        .toast.success {
+            background: rgba(46, 204, 113, 0.95);
+        }
+        .toast.error {
+            background: rgba(231, 76, 60, 0.95);
+        }
+        .copy-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .copy-icon:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+        .copy-icon:active {
+            transform: scale(0.95);
+        }
+        .copy-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: #ecf0f1;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #ecf0f1;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 自定义提示框 -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toast-message"></span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h1>CipherLink Transcoder</h1>
+            <div class="subtitle">安全高效的Base64编码转换工具</div>
+        </div>
+        
+        <div class="input-group">
+            <label for="urlInput"><i class="fas fa-link"></i> 输入链接：</label>
+            <input type="text" id="urlInput" placeholder="请输入需要编码的链接（例如：https://github.com/...）" value="https://github.com/Tengzexin0/cf-worker-mihomo">
+        </div>
+        
+        <div class="button-group">
+            <button class="button convert" onclick="convertLink()">
+                <i class="fas fa-sync-alt"></i> 转换链接
+            </button>
+            <button class="button copy" onclick="copyToClipboard()">
+                <i class="fas fa-copy"></i> 复制结果
+            </button>
+            <button class="button reset" onclick="resetInput()">
+                <i class="fas fa-redo"></i> 重置
+            </button>
+        </div>
+        
+        <div class="result">
+            <span class="result-label"><i class="fas fa-code"></i> Base64编码结果：</span>
+            <div class="code" id="resultCode">
+                aHR0cHM6Ly9naXRodWIuY29tL1Rlbmd6ZXhpbjAvY2Ytd29ya2VyLW1paG9tbw==
+                <div class="copy-icon" onclick="copyToClipboard()">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> 使用说明</h3>
+            <p>1. 在输入框中输入或修改您要编码的链接</p>
+            <p>2. 点击"转换链接"按钮生成Base64编码</p>
+            <p>3. 点击"复制结果"按钮将编码复制到剪贴板</p>
+            <p>4. 在代码中使用：<code>atob('您编码后的字符串')</code> 来解码</p>
+            <p>5. Base64编码常用于在文本环境中安全地传输二进制数据</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2023 CipherLink Transcoder | 安全编码解决方案</p>
+    </div>
+
+    <script>
+        // 显示提示信息
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            const toastIcon = toast.querySelector('i');
+            
+            toastMessage.textContent = message;
+            toast.className = 'toast ' + type;
+            
+            // 更新图标
+            if (type === 'success') {
+                toastIcon.className = 'fas fa-check-circle';
+            } else {
+                toastIcon.className = 'fas fa-exclamation-circle';
+            }
+            
+            toast.classList.add('show');
+            
+            // 3秒后隐藏提示
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        function convertLink() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) {
+                showToast('请输入链接', 'error');
+                return;
+            }
+            
+            try {
+                // 进行Base64编码
+                const encoded = btoa(unescape(encodeURIComponent(url)));
+                
+                // 显示结果
+                document.getElementById('resultCode').textContent = encoded;
+                showToast('链接转换成功！');
+            } catch (error) {
+                showToast('转换失败，请检查链接格式', 'error');
+                console.error('转换错误:', error);
+            }
+        }
+        
+        function copyToClipboard() {
+            const resultText = document.getElementById('resultCode').textContent;
+          
+            if (!resultText) {
+              return;
+            }
+            
+            // 使用现代Clipboard API
+            navigator.clipboard.writeText(resultText).then(() => {
+                showToast('已复制到剪贴板！');
+            }).catch(err => {
+                // 降级方案：使用传统方法
+                const textArea = document.createElement("textarea");
+                textArea.value = resultText;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showToast('已复制到剪贴板！');
+                    } else {
+                        showToast('复制失败，请手动复制', 'error');
+                    }
+                } catch (err) {
+                    showToast('复制失败，请手动复制', 'error');
+                }
+                
+                document.body.removeChild(textArea);
+            });
+        }
+        
+        function resetInput() {
+            document.getElementById('urlInput').value = '';
+            document.getElementById('resultCode').textContent = '';
+            showToast('已重置输入框');
+        }
+        
+        // 页面加载时自动转换示例链接
+        window.onload = function() {
+            convertLink();
+        };
+    </script>
+</body>
+</html>
