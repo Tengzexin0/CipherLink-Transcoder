@@ -278,7 +278,7 @@
         
         <div class="input-group">
             <label for="urlInput"><i class="fas fa-link"></i> 输入链接：</label>
-            <input type="text" id="urlInput" placeholder="请输入需要编码的链接（例如：https://github.com/...）" value="https://github.com/Tengzexin0/cf-worker-mihomo">
+            <input type="text" id="urlInput" placeholder="请输入需要编码的链接（例如：https://github.com/...）" value="">
         </div>
         
         <div class="button-group">
@@ -296,7 +296,6 @@
         <div class="result">
             <span class="result-label"><i class="fas fa-code"></i> Base64编码结果：</span>
             <div class="code" id="resultCode">
-                aHR0cHM6Ly9naXRodWIuY29tL1Rlbmd6ZXhpbjAvY2Ytd29ya2VyLW1paG9tbw==
                 <div class="copy-icon" onclick="copyToClipboard()">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
@@ -316,7 +315,12 @@
     </div>
 
     <div class="footer">
-        <p>© `${new Date().getFullYear()}` CipherLink Transcoder | 安全编码解决方案</p>
+        <p>
+            <script>
+                const year = new Date().getFullYear();
+                document.getElementById('yearTemplate').textContent = `© ${year} CipherLink Transcoder | 安全编码解决方案`;
+            </script> 
+        </p>
     </div>
 
     <script>
