@@ -315,12 +315,7 @@
     </div>
 
     <div class="footer">
-        <p>
-            <script>
-                const year = new Date().getFullYear();
-                document.getElementById('yearTemplate').textContent = `© ${year} CipherLink Transcoder | 安全编码解决方案`;
-            </script> 
-        </p>
+        <p id="yearTemplate"></p>
     </div>
 
     <script>
@@ -406,6 +401,11 @@
             document.getElementById('urlInput').value = '';
             document.getElementById('resultCode').textContent = '';
             showToast('已重置输入框');
+        }
+
+        window.onload = () => {
+            const year = new Date().getFullYear();
+            document.getElementById('yearTemplate').textContent = `© ${year} CipherLink Transcoder | 安全编码解决方案`;
         }
     </script>
 </body>
