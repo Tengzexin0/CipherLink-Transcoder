@@ -316,7 +316,7 @@
     </div>
 
     <div class="footer">
-        <p>© 2023 CipherLink Transcoder | 安全编码解决方案</p>
+        <p>© `${new Date().getFullYear()}` CipherLink Transcoder | 安全编码解决方案</p>
     </div>
 
     <script>
